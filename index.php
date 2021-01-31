@@ -1,5 +1,5 @@
 <?php
-
+// hello from Windows
 $db = new PDO("mysql:host=localhost;dbname=delivery", "delivery", "admin");
 
 $st = $db->prepare("SELECT * FROM fact ORDER BY RAND() LIMIT 1");
