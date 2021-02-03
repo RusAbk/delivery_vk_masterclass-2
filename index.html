@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ШПицца</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="flex rndBg">
+    <div class="loginform">
+        <h2>Войдите</h2>
+        <input type="text" id="login_field">
+        <input type="password" id="password_field">
+        <button class="btn btn-primary" id="btn_login">Войти</button>
+        <button class="btn btn-secodary" id="btn_register">Зарегистрироваться</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        'use strict';
+
+        if(localStorage.getItem('token') != undefined && localStorage.getItem('token') != ''){
+            redirectByRole(localStorage.getItem('role'));
+        }
+
+        // АУТЕНТИФИКАЦИЯ
+        let loginButton = document.querySelector('#btn_login');
+        loginButton.addEventListener('click', function(){
+            let login = document.querySelector('#login_field').value;
+            let password = document.querySelector('#password_field').value;
+
+            axios.get(`/api/login.php?login=${login}&password=${password}`)
+                .then( function (response) {
+                    console.log(response.data);
+                    if(response.data.status == 'ok'){
+                        localStorage.setItem('token', response.data.token);
+                        localStorage.setItem('role', response.data.role);
+
+                        redirectByRole(localStorage.getItem('role'));
+                    } else {
+                        alert('Ошибка аутентификации. Попробуйте еще раз!');
+                    }
+                });
+        })
+        
+        let regButton = document.querySelector('#btn_register');
+        regButton.addEventListener('click', function(){
+            let login = document.querySelector('#login_field').value;
+            let password = document.querySelector('#password_field').value;
+
+            axios.get(`/api/register.php?login=${login}&password=${password}`)
+                .then( function (response) {
+                    console.log(response.data);
+
+                    if(response.data.status == 'ok'){
+                        localStorage.setItem('token', response.data.token);
+                        localStorage.setItem('role', response.data.role);
+
+                        redirectByRole(localStorage.getItem('role'));
+                    } else {
+                        alert('Такой пользователь уже существует!');
+                    }
+                });
+        });
+
+        function redirectByRole(role){
+            switch(role){
+                case "0":
+                    window.location.replace('client.html');
+                    break;
+                case "1":
+                    window.location.replace('courier.html');
+                    break;
+                case "2":
+                    window.location.replace('admin.html');
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>

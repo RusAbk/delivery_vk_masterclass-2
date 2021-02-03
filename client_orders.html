@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ШПицца</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Мои заказы</h2>
+        <a href="client.html">Выбрать блюда</a>
+        <div class="dishes">
+            // Здесь будут товары (блюда)
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        'use strict';
+
+        let dishesContainer = document.querySelector('.dishes');
+
+        axios.get('/api/dishes_list.php')
+            .then( function(response){
+                console.log(response.data);
+                dishesContainer.innerHTML = '';
+                for(let dish of response.data){
+                    let template = `
+                        <div class="dish">
+                            <h3>${dish.title}</h3>
+                            <img src="https://i.ibb.co/fnBhLfM/pizza.png">
+                            <p class="price">${dish.price}</p>
+                            <button class="btn" onclick="addToCart(${dish.id});">Заказать</button>
+                        </div>
+                    `;
+                    dishesContainer.innerHTML += template;
+                }
+            });
+
+        function addToCart(id){
+            let cart = JSON.parse(localStorage.getItem('cart'));
+            if(cart == "" || cart == undefined){
+                cart = [];
+            }
+
+            cart.push(id);
+            localStorage.setItem('cart', JSON.stringify(cart))
+        }
+    </script>
+</body>
+</html>
